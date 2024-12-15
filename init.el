@@ -4,7 +4,10 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(elpa-mirror org-bullets lsp-pyright flycheck undo-fu yaml-pro yaml-mode docker lsp-treemacs lsp-ivy lsp-ui lsp-mode company which-key rust-mode notmuch mu4e epc evil doom-modeline counsel command-log-mode)))
+   '(outline-indent elpa-mirror org-bullets lsp-pyright flycheck undo-fu yaml-pro yaml-mode docker lsp-treemacs lsp-ivy lsp-ui lsp-mode company which-key rust-mode notmuch mu4e epc evil doom-modeline counsel command-log-mode))
+ '(package-vc-selected-packages
+   '((dockerfile-mode :vc-backend Git :url "https://github.com/spotify/dockerfile-mode")
+     (vc-use-package :vc-backend Git :url "https://github.com/slotThe/vc-use-package"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -211,8 +214,8 @@
 
 (use-package yaml-mode)
 
-(use-package yaml-pro)
-(add-hook 'yaml-mode-hook #'yaml-pro-mode 100)
+;; (use-package yaml-pro)
+;; (add-hook 'yaml-mode-hook #'yaml-pro-mode 100)
 
 
 (use-package flycheck
@@ -280,4 +283,16 @@
      `(org-level-1 ((t (,@headline ,@variable-tuple :height 1.75))))
      `(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil))))))
 
+(global-auto-revert-mode 1)
+(use-package outline-indent
+  :ensure t
+  :custom
+  (outline-indent-ellipsis " ▼ "))
 
+;; Python
+(add-hook 'python-mode-hook #'outline-indent-minor-mode)
+(add-hook 'python-ts-mode-hook #'outline-indent-minor-mode)
+
+;; YAML
+(add-hook 'yaml-mode-hook #'outline-indent-minor-mode)
+(add-hook 'yaml-ts-mode-hook #'outline-indent-minor-mode)
