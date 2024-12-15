@@ -1,3 +1,19 @@
+(setq url-proxy-services
+   '(
+     ("http" . "10.17.16.110:8080")
+     ("https" . "10.17.16.110:8080")))
+
+;;;; Mouse scrolling in terminal emacs
+(unless (display-graphic-p)
+  ;; activate mouse-based scrolling
+  (xterm-mouse-mode 1)
+  (global-set-key (kbd "<mouse-4>") 'scroll-down-line)
+  (global-set-key (kbd "<mouse-5>") 'scroll-up-line)
+  )
+
+(add-to-list 'load-path "~/dev/elpa-mirror")
+(require 'elpa-mirror)
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -28,6 +44,7 @@
 
 		    ;;)
 
+
 (setq inhibit-startup-message t)
 
 (scroll-bar-mode -1)
@@ -47,11 +64,20 @@
 ;; Make ESC quit prompts
 (global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
-;;(require 'package)
-(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+(require 'package)
+(setq package-archives '(
+("myelpa" . "~/dev/myelpa")
+;;("melpa" . "https://melpa.org/packages/")
 			 ;;("melpa-stable" . "https://stable.melpa.org/packages/")
-			 ("org" . "https://orgmode.org/elpa/")
-			 ("elpa" . "https://elpa.gnu.org/packages/")))
+;;			 ("org" . "https://orgmode.org/elpa/")
+;;			 ("elpa" . "https://elpa.gnu.org/packages/")
+             ))
+
+;; add-to-list will not override default elpa.
+;; So now you have two repositories.
+;; One is GNU elpa. Another is myelpa
+;;(setq package-archives
+;;             '(("myelpa" . "~/dev/myelpa")))
 
 (package-initialize)
 (unless package-archive-contents
@@ -192,17 +218,17 @@
 (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
 
 
-(require 'rust-mode)
-(use-package rust-mode
-  :defer t
-  :init
-  (setq rust-mode-treesitter-derive t)
-  )
-
-(add-hook 'rust-mode-hook
-          (lambda () (setq indent-tabs-mode nil)))
-(setq rust-format-on-save t)
-(add-hook 'rust-mode-hook #'lsp)
+;;(require 'rust-mode)
+;;(use-package rust-mode
+;;  :defer t
+;;  :init
+;;  (setq rust-mode-treesitter-derive t)
+;;  )
+;;
+;;(add-hook 'rust-mode-hook
+;;          (lambda () (setq indent-tabs-mode nil)))
+;;(setq rust-format-on-save t)
+;;(add-hook 'rust-mode-hook #'lsp)
 
 
 (use-package dockerfile-mode
@@ -265,27 +291,28 @@
 (use-package org-bullets
     :config
     (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))))
-(let* ((variable-tuple
-          (cond ((x-list-fonts "ETBembo")         '(:font "ETBembo"))
-                ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
-                ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
-                ((x-list-fonts "Verdana")         '(:font "Verdana"))
-                ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
-                (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
-         (base-font-color     (face-foreground 'default nil 'default))
-         (headline           `(:inherit default :weight bold :foreground ,base-font-color)))
 
-    (custom-theme-set-faces
-     'user
-     `(org-level-8 ((t (,@headline ,@variable-tuple))))
-     `(org-level-7 ((t (,@headline ,@variable-tuple))))
-     `(org-level-6 ((t (,@headline ,@variable-tuple))))
-     `(org-level-5 ((t (,@headline ,@variable-tuple))))
-     `(org-level-4 ((t (,@headline ,@variable-tuple :height 1.1))))
-     `(org-level-3 ((t (,@headline ,@variable-tuple :height 1.25))))
-     `(org-level-2 ((t (,@headline ,@variable-tuple :height 1.5))))
-     `(org-level-1 ((t (,@headline ,@variable-tuple :height 1.75))))
-     `(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil))))))
+;;(let* ((variable-tuple
+;;          (cond ((x-list-fonts "ETBembo")         '(:font "ETBembo"))
+;;                ((x-list-fonts "Source Sans Pro") '(:font "Source Sans Pro"))
+;;                ((x-list-fonts "Lucida Grande")   '(:font "Lucida Grande"))
+;;                ((x-list-fonts "Verdana")         '(:font "Verdana"))
+;;                ((x-family-fonts "Sans Serif")    '(:family "Sans Serif"))
+;;                (nil (warn "Cannot find a Sans Serif Font.  Install Source Sans Pro."))))
+;;         (base-font-color     (face-foreground 'default nil 'default))
+;;         (headline           `(:inherit default :weight bold :foreground ,base-font-color)))
+;;
+;;    (custom-theme-set-faces
+;;     'user
+;;     `(org-level-8 ((t (,@headline ,@variable-tuple))))
+;;     `(org-level-7 ((t (,@headline ,@variable-tuple))))
+;;     `(org-level-6 ((t (,@headline ,@variable-tuple))))
+;;     `(org-level-5 ((t (,@headline ,@variable-tuple))))
+;;     `(org-level-4 ((t (,@headline ,@variable-tuple :height 1.1))))
+;;     `(org-level-3 ((t (,@headline ,@variable-tuple :height 1.25))))
+;;     `(org-level-2 ((t (,@headline ,@variable-tuple :height 1.5))))
+;;     `(org-level-1 ((t (,@headline ,@variable-tuple :height 1.75))))
+;;     `(org-document-title ((t (,@headline ,@variable-tuple :height 2.0 :underline nil))))))
 
 (global-auto-revert-mode 1)
 (use-package outline-indent
