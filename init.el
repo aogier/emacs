@@ -214,8 +214,8 @@
 
 (use-package yaml-mode)
 
-;; (use-package yaml-pro)
-;; (add-hook 'yaml-mode-hook #'yaml-pro-mode 100)
+(use-package yaml-pro)
+(add-hook 'yaml-mode-hook 'yaml-pro-ts-mode 100)
 
 
 (use-package flycheck
