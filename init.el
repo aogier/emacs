@@ -4,7 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(outline-indent elpa-mirror org-bullets lsp-pyright flycheck undo-fu yaml-pro yaml-mode docker lsp-treemacs lsp-ivy lsp-ui lsp-mode company which-key rust-mode notmuch mu4e epc evil doom-modeline counsel command-log-mode))
+   '(magit outline-indent elpa-mirror org-bullets lsp-pyright flycheck undo-fu yaml-pro yaml-mode docker lsp-treemacs lsp-ivy lsp-ui lsp-mode company which-key rust-mode notmuch mu4e epc evil doom-modeline counsel command-log-mode))
  '(package-vc-selected-packages
    '((dockerfile-mode :vc-backend Git :url "https://github.com/spotify/dockerfile-mode")
      (vc-use-package :vc-backend Git :url "https://github.com/slotThe/vc-use-package"))))
@@ -25,7 +25,7 @@
  '(org-level-8 ((t (:inherit default :weight bold :foreground "#bbc2cf" :font "Verdana")))))
 ;;(set-face-attribute 'default nil
 		    ;;:font "JetBrainsMono Nerd Font" :height 120
-		    
+
 		    ;;)
 
 (setq inhibit-startup-message t)
@@ -96,7 +96,7 @@
 	 ("C-r" . 'counsel-minibuffer-history))
   :config
   (setq ivy-initial-inputs-alist nil))
- 
+
 ;;; UNDO
 ;; Vim style undo not needed for emacs 28
 (use-package undo-fu)
@@ -311,3 +311,6 @@
 
 
 (global-auto-revert-mode 1)
+
+
+(use-package magit)
