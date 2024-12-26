@@ -4,9 +4,9 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(magit outline-indent elpa-mirror org-bullets lsp-pyright flycheck undo-fu yaml-pro yaml-mode docker lsp-treemacs lsp-ivy lsp-ui lsp-mode company which-key rust-mode notmuch mu4e epc evil doom-modeline counsel command-log-mode))
+   '(magit outline-indent elpa-mirror org-bullets lsp-pyright flycheck undo-fu docker lsp-treemacs lsp-ivy lsp-ui lsp-mode company which-key rust-mode notmuch mu4e epc evil doom-modeline counsel command-log-mode))
  '(package-vc-selected-packages
-   '((dockerfile-mode :vc-backend Git :url "https://github.com/spotify/dockerfile-mode")
+   '((dockerfile-mode :vc-backend Git :url "https://github.com/aogier/dockerfile-mode")
      (vc-use-package :vc-backend Git :url "https://github.com/slotThe/vc-use-package"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -205,7 +205,7 @@
 
 
 (use-package dockerfile-mode
-  :vc (:repo spotify/dockerfile-mode
+  :vc (:repo aogier/dockerfile-mode
 	    :fetcher github))
 
 (use-package docker
@@ -294,7 +294,7 @@
 (add-hook 'python-ts-mode-hook #'outline-indent-minor-mode)
 
 ;; YAML
-(add-hook 'yaml-mode-hook #'outline-indent-minor-mode)
+;; (add-hook 'yaml-mode-hook #'outline-indent-minor-mode)
 (add-hook 'yaml-ts-mode-hook #'outline-indent-minor-mode)
 
 
