@@ -348,3 +348,4 @@
 
 (setq require-final-newline t)
 (global-display-line-numbers-mode 1)
+
