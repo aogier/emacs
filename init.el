@@ -141,6 +141,7 @@
   :init
   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
   (setq lsp-keymap-prefix "C-c l")
+  (setq lsp-inlay-hints-enable t)
   :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
          (python-mode . lsp)
          ;; if you want which-key integration
@@ -223,7 +224,7 @@
   (add-hook 'after-init-hook #'global-flycheck-mode))
 
 (use-package lsp-pyright
-  :custom (lsp-pyright-langserver-command "pyright") ;; or basedpyright
+  :custom (lsp-pyright-langserver-command "basedpyright") ;; or basedpyright
   :hook (python-mode . (lambda ()
                           (require 'lsp-pyright)
                           (lsp))))  ; or lsp-deferred
@@ -314,3 +315,6 @@
 
 
 (use-package magit)
+
+(setq require-final-newline t)
+(global-display-line-numbers-mode 1)
