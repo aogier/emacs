@@ -232,6 +232,9 @@
 (use-package all-the-icons
   :if (display-graphic-p))
 
+(use-package solaire-mode)
+(solaire-global-mode +1)
+
 (use-package doom-themes
   :config
   ;; Global settings (defaults)
