@@ -20,7 +20,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(magit outline-indent elpa-mirror org-bullets lsp-pyright flycheck undo-fu docker lsp-treemacs lsp-ivy lsp-ui lsp-mode company which-key rust-mode notmuch mu4e epc evil doom-modeline counsel command-log-mode))
+   '(solaire-mode magit outline-indent elpa-mirror org-bullets lsp-pyright flycheck undo-fu docker lsp-treemacs lsp-ivy lsp-ui lsp-mode company which-key rust-mode notmuch mu4e epc evil doom-modeline counsel command-log-mode))
  '(package-vc-selected-packages
    '((dockerfile-mode :vc-backend Git :url "https://github.com/aogier/dockerfile-mode")
      (vc-use-package :vc-backend Git :url "https://github.com/slotThe/vc-use-package"))))
@@ -57,6 +57,7 @@
 ;; (setq visible-bell t)
 
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(add-hook 'prog-mode-hook (lambda () (setq indent-tabs-mode nil)))
 
 
 (load-theme 'wombat)
@@ -349,3 +350,6 @@
 (setq require-final-newline t)
 (global-display-line-numbers-mode 1)
 
+
+(setq column-number-mode t)
+(setq line-number-mode t)
