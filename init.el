@@ -13,19 +13,12 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(all-the-icons command-log-mode company concurrent counsel ctable
-                   deferred docker dockerfile-mode doom-modeline
-                   doom-themes elpa-mirror epc flycheck go-mode
-                   hcl-mode hl-todo lsp-ivy lsp-pyright lsp-treemacs
-                   lsp-ui magit mu4e notmuch org-bullets
-                   outline-indent rust-mode solaire-mode undo-fu
-                   vc-use-package yaml-mode yaml-pro))
+ '(package-selected-packages nil)
  '(package-vc-selected-packages
    '((dockerfile-mode :vc-backend Git :url
-                      "https://github.com/aogier/dockerfile-mode")
+		      "https://github.com/aogier/dockerfile-mode")
      (vc-use-package :vc-backend Git :url
-                     "https://github.com/slotThe/vc-use-package"))))
+		     "https://github.com/slotThe/vc-use-package"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -50,6 +43,9 @@
 
 (add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (add-hook 'prog-mode-hook (lambda () (setq indent-tabs-mode nil)))
+
+(add-hook 'markdown-mode-hook (lambda () (setq indent-tabs-mode nil)))
+
 (add-hook 'prog-mode-hook (lambda () (setq column-number-mode t)))
 (add-hook 'prog-mode-hook (lambda () (setq tab-width 4)))
 
@@ -163,6 +159,7 @@
 
 
 (use-package lsp-mode
+  ;;:vc (:repo "aogier/lsp-mode" :fetcher "github" :rev "bugfix/go-inlay-hints")
   :init
   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
   (setq lsp-keymap-prefix "C-c l")
@@ -172,15 +169,17 @@
          ;; if you want which-key integration
          (lsp-mode . lsp-enable-which-key-integration)
          ;; ;; https://github.com/emacs-lsp/lsp-mode/issues/4357#issuecomment-1986856407
-         (lsp-register-custom-settings
-          '(("gopls.hints" ((assignVariableTypes . t)
-                            (compositeLiteralFields . t)
-                            (compositeLiteralTypes . t)
-                            (constantValues . t)
-                            (functionTypeParameters . t)
-                            (parameterNames . t)
-                            (rangeVariableTypes . t)))))
-)
+	 )
+  :config
+            (lsp-register-custom-settings
+             '(("gopls.hints" ((assignVariableTypes . t)
+                               (compositeLiteralFields . t)
+                               (compositeLiteralTypes . t)
+                               (constantValues . t)
+                               (functionTypeParameters . t)
+                               (parameterNames . t)
+                               (rangeVariableTypes . t)))))
+
   :commands lsp
   )
 ;; optionally
@@ -196,36 +195,38 @@
   (which-key-mode))
 
 
-(defun lsp-booster--advice-json-parse (old-fn &rest args)
-  "Try to parse bytecode instead of json."
-  (or
-   (when (equal (following-char) ?#)
-     (let ((bytecode (read (current-buffer))))
-       (when (byte-code-function-p bytecode)
-         (funcall bytecode))))
-   (apply old-fn args)))
-(advice-add (if (progn (require 'json)
-                       (fboundp 'json-parse-buffer))
-                'json-parse-buffer
-              'json-read)
-            :around
-            #'lsp-booster--advice-json-parse)
-
-(defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
-  "Prepend emacs-lsp-booster command to lsp CMD."
-  (let ((orig-result (funcall old-fn cmd test?)))
-    (if (and (not test?)                             ;; for check lsp-server-present?
-             (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
-             lsp-use-plists
-             (not (functionp 'json-rpc-connection))  ;; native json-rpc
-             (executable-find "emacs-lsp-booster"))
-        (progn
-          (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
-            (setcar orig-result command-from-exec-path))
-          (message "Using emacs-lsp-booster for %s!" orig-result)
-          (cons "emacs-lsp-booster" orig-result))
-      orig-result)))
-(advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
+;;    (defun lsp-booster--advice-json-parse (old-fn &rest args)
+;;      "Try to parse bytecode instead of json."
+;;      (or
+;;       (when (equal (following-char) ?#)
+;;         (let ((bytecode (read (current-buffer))))
+;;           (when (byte-code-function-p bytecode)
+;;             (funcall bytecode))))
+;;       (apply old-fn args)))
+;;    (advice-add (if (progn (require 'json)
+;;                           (fboundp 'json-parse-buffer))
+;;                    'json-parse-buffer
+;;                  'json-read)
+;;                :around
+;;                #'lsp-booster--advice-json-parse)
+;;
+;;    (defun lsp-booster--advice-final-command (old-fn cmd &optional test?)
+;;      "Prepend emacs-lsp-booster command to lsp CMD."
+;;      (let ((orig-result (funcall old-fn cmd test?)))
+;;        (if (and (not test?)                             ;; for check lsp-server-present?
+;;                 (not (file-remote-p default-directory)) ;; see lsp-resolve-final-command, it would add extra shell wrapper
+;;                 lsp-use-plists
+;;                 (not (functionp 'json-rpc-connection))  ;; native json-rpc
+;;                 (executable-find "emacs-lsp-booster"))
+;;            (progn
+;;              (when-let ((command-from-exec-path (executable-find (car orig-result))))  ;; resolve command from exec-path (in case not found in $PATH)
+;;                (setcar orig-result command-from-exec-path))
+;;              (message "Using emacs-lsp-booster for %s!" orig-result)
+;;              ;;(cons "emacs-lsp-booster" orig-result)
+;;    	  (append ("emacs-lsp-booster" "--json-object-type" "hashtable") orig-result)
+;;    	  )
+;;          orig-result)))
+;;    (advice-add 'lsp-resolve-final-command :around #'lsp-booster--advice-final-command)
 
 (use-package go-mode
   :defer t
@@ -249,6 +250,13 @@
 (setq rust-format-on-save t)
 (add-hook 'rust-mode-hook #'lsp)
 
+(use-package rustic
+  :ensure t
+  :config
+  (setq rustic-format-on-save nil)
+  :custom
+  (rustic-cargo-use-last-stored-arguments t))
+
 
 (use-package dockerfile-mode
   :vc (:repo aogier/dockerfile-mode
@@ -260,8 +268,8 @@
 
 (use-package yaml-mode)
 
-(use-package yaml-pro)
-(add-hook 'yaml-mode-hook 'yaml-pro-ts-mode 100)
+;;(use-package yaml-pro)
+;;(add-hook 'yaml-mode-hook 'yaml-pro-ts-mode 100)
 
 
 (use-package flycheck
@@ -346,7 +354,7 @@
 
 ;; YAML
 ;; (add-hook 'yaml-mode-hook #'outline-indent-minor-mode)
-(add-hook 'yaml-ts-mode-hook #'outline-indent-minor-mode)
+;;(add-hook 'yaml-ts-mode-hook #'outline-indent-minor-mode)
 
 
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
@@ -409,5 +417,6 @@
   (funcall fun)))
 (advice-add #'keyboard-escape-quit :around #'+keyboard-escape-quit-adv)
 
+(keymap-global-unset "<insert>")
 
 ;;; init.el ends here
